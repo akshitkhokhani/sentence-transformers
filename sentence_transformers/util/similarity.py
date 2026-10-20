@@ -154,7 +154,7 @@ def manhattan_sim(a: list | np.ndarray | Tensor, b: list | np.ndarray | Tensor) 
         a_coo = to_scipy_coo(a)
         b_coo = to_scipy_coo(b)
         dist = pairwise_distances(a_coo, b_coo, metric="manhattan")
-        return torch.from_numpy(-dist).float().to(a.device).to_dense()
+        return torch.from_numpy(-dist).to(dtype=a.dtype, device=a.device).to_dense()
 
     else:
         return -torch.cdist(a, b, p=1.0).to_dense()

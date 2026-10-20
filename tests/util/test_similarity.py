@@ -379,12 +379,18 @@ def test_maxsim_pairwise_matches_maxsim_diagonal() -> None:
     ],
 )
 @pytest.mark.parametrize("sparse_first", [True, False])
-def test_similarity_mixed_sparse_dense(sparse_tensors, similarity_fn, pairwise_similarity_fn, sparse_first) -> None:
+@pytest.mark.parametrize("dtype", [torch.float32, torch.float64])
+@pytest.mark.parametrize("as_list", [False, True])
+def test_similarity_mixed_sparse_dense(
+    sparse_tensors, similarity_fn, pairwise_similarity_fn, sparse_first, dtype, as_list
+) -> None:
     """Test that mixing a sparse and a dense operand matches the all-dense result."""
-    tensor1, tensor2 = sparse_tensors
+    tensor1, tensor2 = (tensor.to(dtype) for tensor in sparse_tensors)
 
     dense1 = tensor1.to_dense()
     dense2 = tensor2.to_dense()
+    if as_list:
+        tensor1, tensor2 = list(tensor1), list(tensor2)
 
     a, b = (tensor1, dense2) if sparse_first else (dense1, tensor2)
 
